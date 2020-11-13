@@ -2,4 +2,4 @@
 
 check my telegram for more resources
 
-t.me/megaebookstore
+https://t.me/megaebookstore
