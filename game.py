@@ -92,3 +92,73 @@ def show_score():
     font = pygame.font.SysFont("Copperplate Gothic Bold", 20)
     text = font.render("Score: " + str(score), True, snake_colour)
     display.blit(text, (scale, scale))
+# ----------- Main Game Loop -------------
+def gameLoop():
+    loop = True
+
+    global score
+
+    snake = Snake(width/2, height/2)
+    food = Food()
+    food.new_location()
+
+    while loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+                if snake.y_dir == 0:
+                    if event.key == pygame.K_UP:
+                        snake.x_dir = 0
+                        snake.y_dir = -1
+                    if event.key == pygame.K_DOWN:
+                        snake.x_dir = 0
+                        snake.y_dir = 1
+
+                if snake.x_dir == 0:
+                    if event.key == pygame.K_LEFT:
+                        snake.x_dir = -1
+                        snake.y_dir = 0
+                    if event.key == pygame.K_RIGHT:
+                        snake.x_dir = 1
+                        snake.y_dir = 0
+
+        display.fill(background)
+
+        snake.show()
+        snake.update()
+        food.show()
+        show_score()
+
+        if snake.check_eaten():
+            food.new_location()
+            score += 1
+            snake.grow()
+
+        if snake.death():
+            score = 0
+            font = pygame.font.SysFont("Copperplate Gothic Bold", 50)
+            text = font.render("Game Over!", True, snake_colour)
+            display.blit(text, (width/2-50, height/2))
+            pygame.display.update()
+            time.sleep(3)
+            snake.reset()
+
+        if snake.history[0][0] > width:
+            snake.history[0][0] = 0
+        if snake.history[0][0] < 0:
+            snake.history[0][0] = width
+
+        if snake.history[0][1] > height:
+            snake.history[0][1] = 0
+        if snake.history[0][1] < 0:
+            snake.history[0][1] = height
+
+        pygame.display.update()
+        clock.tick(10)
+
+gameLoop()
